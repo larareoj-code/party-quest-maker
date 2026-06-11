@@ -1,4 +1,10 @@
+[project]
+name = "party-quest-maker"
+version = "1.0.0"
+description = "Personalized party game generator with premium hosting tools."
+requires-python = ">=3.12"
+dependencies = ["stripe>=12.0,<13"]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-
