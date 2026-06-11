@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create personalized scavenger hunts, mini escape rooms, and party bingo packs.">
+  <title>Party Quest Maker</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/overrides.css?v=2">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Party Quest Maker home">
+      <span class="brand-name"><b>PARTY</b> <b>QUEST</b> <b>MAKER</b></span>
+      <small>Make the party the adventure.</small>
+    </a>
+    <nav aria-label="Workspace">
+      <button class="nav-button" id="saved-button" type="button">Saved quests <span id="saved-count">0</span></button>
+      <span class="license-badge" id="license-badge">Free quest maker</span>
+      <button class="upgrade-button" id="upgrade-button" type="button">Unlock lifetime</button>
+    </nav>
+  </header>
+
+  <p class="checkout-message" id="checkout-message" role="status" hidden></p>
+
+  <main class="app-shell">
+    <aside class="setup-panel" aria-labelledby="setup-heading">
+      <div class="panel-title coral"><span class="step">1</span><h1 id="setup-heading">Set up your quest</h1></div>
+      <form id="quest-form">
+        <fieldset class="mode-picker">
+          <legend>Game mode</legend>
+          <label><input type="radio" name="mode" value="scavenger" checked><span>Scavenger hunt</span></label>
+          <label><input type="radio" name="mode" value="escape"><span>Mini escape room</span></label>
+          <label><input type="radio" name="mode" value="bingo"><span>Party bingo</span></label>
+        </fieldset>
+
+        <label>Occasion<select id="occasion"><option>Birthday Party</option><option>Family Gathering</option><option>Date Night</option><option>Baby Shower</option><option>Reunion</option><option>Team Celebration</option></select></label>
+        <label>Age group<select id="age-group"><option>Kids 8-12</option><option>Kids 5-7</option><option>Teens</option><option>Adults</option><option>All ages</option></select></label>
+        <label>Theme<select id="theme"><option value="space">Space Adventure</option><option value="jungle">Jungle Expedition</option><option value="celebration">Confetti Challenge</option><option value="mystery">Secret Agent Mystery</option></select></label>
+        <label>Location<select id="location"><option value="home">Indoor / Home</option><option value="outdoors">Outdoors</option><option value="office">Office / Venue</option><option value="anywhere">Anywhere</option></select></label>
+
+        <div class="field-row">
+          <label>Players<input id="players" type="number" min="1" max="40" value="6"></label>
+          <label>Difficulty<select id="difficulty"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>
+        </div>
+        <label>Game length<select id="minutes"><option value="30">30 minutes</option><option value="45" selected>45 minutes</option><option value="60">60 minutes</option><option value="90">90 minutes</option></select></label>
+
+        <section class="personalize">
+          <div class="subhead yellow">Personalize <small>optional</small></div>
+          <label>Guest of honor<input id="guest-name" maxlength="60" placeholder="Jordan"></label>
+          <label>Welcome message<textarea id="message" maxlength="180" rows="3" placeholder="Happy birthday! Get ready for an out-of-this-world adventure."></textarea><small id="message-count">0 / 180</small></label>
+        </section>
+        <button class="generate-button" type="submit"><span>Generate quest</span><b aria-hidden="true">&rarr;</b></button>
+        <p class="form-error" id="form-error" role="alert"></p>
+      </form>
+    </aside>
+
+    <section class="workspace" aria-labelledby="preview-heading">
+      <header class="workspace-header teal">
+        <div><span class="step">2</span><h2 id="preview-heading">Your quest preview</h2></div>
+        <div class="workspace-actions">
+          <button id="print-button" type="button">Print pack</button>
+          <button id="host-button" type="button">Host mode</button>
+          <button id="save-button" class="save-button" type="button">Save quest</button>
+        </div>
+      </header>
+
+      <div class="quest-hero">
+        <img src="/assets/party-quest-cover.png" alt="Colorful rocket, planet, clue card, and party confetti">
+        <div class="quest-hero-copy">
+          <p class="kicker">Ready-made adventure</p>
+          <h2 id="quest-title">Space Adventure Scavenger Hunt</h2>
+          <p id="quest-subtitle">A birthday party quest for Jordan</p>
+        </div>
+      </div>
+
+      <div class="quest-stats" aria-label="Quest details">
+        <div><strong id="stat-players">6</strong><span>Players</span></div>
+        <div><strong id="stat-minutes">45 min</strong><span>Game length</span></div>
+        <div><strong id="stat-difficulty">Medium</strong><span>Difficulty</span></div>
+        <div><strong id="stat-clues">10</strong><span>Clues</span></div>
+      </div>
+
+      <div class="preview-grid">
+        <section class="quest-path">
+          <div class="subhead teal">Quest path</div>
+          <ol id="quest-path"></ol>
+        </section>
+
+        <section class="clue-preview" aria-labelledby="clue-title">
+          <div class="subhead coral">Clue card preview</div>
+          <article class="clue-card">
+            <span class="clue-number" id="clue-number">1</span>
+            <p class="clue-kind" id="clue-kind">Find</p>
+            <h3 id="clue-title">Mission 1</h3>
+            <p id="clue-prompt">Find something round like a moon.</p>
+            <div class="clue-location"><span>Suggested spot</span><b id="clue-location">Entryway</b></div>
+            <details><summary>Host hint</summary><p id="clue-hint">Look near the entryway.</p></details>
+          </article>
+          <div class="clue-nav"><button id="previous-clue" type="button" aria-label="Previous clue">Previous</button><span id="clue-position">1 / 10</span><button id="next-clue" type="button" aria-label="Next clue">Next</button></div>
+        </section>
+
+        <section class="host-guide">
+          <div class="subhead yellow">Host instructions</div>
+          <ol>
+            <li><b>Set the scene</b><span>Print the welcome page and clue cards.</span></li>
+            <li><b>Hide the clues</b><span>Use only safe, age-appropriate spots.</span></li>
+            <li><b>Gather the crew</b><span>Explain the rules and split large groups.</span></li>
+            <li><b>Start the quest</b><span>Give the first clue and start the timer.</span></li>
+            <li><b>Celebrate</b><span>Finish with the victory certificate.</span></li>
+          </ol>
+        </section>
+      </div>
+
+      <section class="pack-strip">
+        <div><p class="kicker">Included in your pack</p><h3 id="story-heading">A complete game, ready to host</h3></div>
+        <ul id="pack-list"></ul>
+      </section>
+      <p class="safety-note" id="safety-note"></p>
+    </section>
+  </main>
+
+  <div id="print-pack" class="print-pack" aria-hidden="true"></div>
+
+  <dialog id="purchase-dialog">
+    <button class="dialog-close" id="close-purchase" type="button" aria-label="Close">&times;</button>
+    <p class="kicker">Party Quest Maker lifetime</p>
+    <h2>Every occasion becomes a new game.</h2>
+    <div class="price"><strong>$19</strong><span>one-time purchase</span></div>
+    <ul><li>Complete printable packs</li><li>Interactive host mode with timer and scoring</li><li>Saved quests in this browser</li><li>Lifetime access to premium tools</li></ul>
+    <button class="generate-button" id="buy-lifetime" type="button"><span>Unlock lifetime tools</span><b>&rarr;</b></button>
+    <p class="billing-note" id="billing-note">Secure checkout by Stripe. No subscription.</p>
+  </dialog>
+
+  <dialog id="saved-dialog">
+    <button class="dialog-close" id="close-saved" type="button" aria-label="Close">&times;</button>
+    <p class="kicker">Your browser</p><h2>Saved quests</h2>
+    <p id="saved-empty">No saved quests yet.</p><ol class="saved-list" id="saved-list"></ol>
+  </dialog>
+
+  <dialog class="host-dialog" id="host-dialog">
+    <div class="host-top"><div><p class="kicker">Host mode</p><h2 id="host-title">Space Adventure</h2></div><button id="close-host" type="button">Exit host mode</button></div>
+    <div class="host-stage">
+      <section class="timer-panel"><span>Time remaining</span><strong id="timer">45:00</strong><div><button id="timer-toggle" type="button">Start</button><button id="timer-reset" type="button">Reset</button></div></section>
+      <section class="live-clue"><span id="live-number">Mission 1</span><h3 id="live-prompt">Find something round like a moon.</h3><button id="complete-clue" type="button">Mark complete</button></section>
+      <section class="score-panel"><label>Team name<input id="team-name" value="The Quest Crew"></label><p>Score <strong id="team-score">0</strong></p><button id="add-points" type="button">Add 10 points</button></section>
+    </div>
+  </dialog>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>
